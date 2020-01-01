@@ -20,11 +20,15 @@ import javax.sql.DataSource;
 import org.apache.ibatis.transaction.TransactionFactory;
 
 /**
+ * 配置的环境信息
  * @author Clinton Begin
  */
 public final class Environment {
+  //
   private final String id;
+  //环境中配置的事务工厂
   private final TransactionFactory transactionFactory;
+  //数据源信息
   private final DataSource dataSource;
 
   public Environment(String id, TransactionFactory transactionFactory, DataSource dataSource) {
@@ -41,7 +45,7 @@ public final class Environment {
     this.transactionFactory = transactionFactory;
     this.dataSource = dataSource;
   }
-
+  //Builder模式
   public static class Builder {
       private String id;
       private TransactionFactory transactionFactory;

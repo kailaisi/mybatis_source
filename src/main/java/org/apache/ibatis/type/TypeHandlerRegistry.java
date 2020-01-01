@@ -317,8 +317,11 @@ public final class TypeHandlerRegistry {
   // Only handler
 
   @SuppressWarnings("unchecked")
+  //只配置了typeHandler, 没有配置jdbcType 或者javaType
   public <T> void register(TypeHandler<T> typeHandler) {
     boolean mappedTypeFound = false;
+    //在自定义typeHandler的时候，可以加上注解MappedTypes 去指定关联的javaType
+    //因此，此处需要扫描MappedTypes注解
     MappedTypes mappedTypes = typeHandler.getClass().getAnnotation(MappedTypes.class);
     if (mappedTypes != null) {
       for (Class<?> handledType : mappedTypes.value()) {
@@ -342,12 +345,12 @@ public final class TypeHandlerRegistry {
   }
 
   // java type + handler
-
   public <T> void register(Class<T> javaType, TypeHandler<? extends T> typeHandler) {
     register((Type) javaType, typeHandler);
   }
 
   private <T> void register(Type javaType, TypeHandler<? extends T> typeHandler) {
+    //扫描注解MappedJdbcTypes
     MappedJdbcTypes mappedJdbcTypes = typeHandler.getClass().getAnnotation(MappedJdbcTypes.class);
     if (mappedJdbcTypes != null) {
       for (JdbcType handledJdbcType : mappedJdbcTypes.value()) {

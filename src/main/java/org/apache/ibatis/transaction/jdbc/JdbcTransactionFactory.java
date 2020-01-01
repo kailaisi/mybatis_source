@@ -36,7 +36,7 @@ public class JdbcTransactionFactory implements TransactionFactory {
   @Override
   public void setProperties(Properties props) {
   }
-
+  //根据connect对象生成一个事务
   @Override
   public Transaction newTransaction(Connection conn) {
     return new JdbcTransaction(conn);

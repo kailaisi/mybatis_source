@@ -108,7 +108,7 @@ public abstract class BaseBuilder {
       throw new BuilderException("Error creating instance. Cause: " + e, e);
     }
   }
-
+  //根据别名解析Class,其实是去查看 类型别名注册/事务管理器别名
   protected Class<?> resolveClass(String alias) {
     if (alias == null) {
       return null;

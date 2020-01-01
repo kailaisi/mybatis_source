@@ -120,7 +120,7 @@ public class TypeAliasRegistry {
       throw new TypeException("Could not resolve type alias '" + string + "'.  Cause: " + e, e);
     }
   }
-
+  //如果是通过<packageName>来进行别名解析的话，根据获取包名下面的所有的类信息然后进行别名的设置
   public void registerAliases(String packageName){
     registerAliases(packageName, Object.class);
   }
@@ -147,6 +147,7 @@ public class TypeAliasRegistry {
     registerAlias(alias, type);
   }
 
+  //别名的最终注册实现类，即将别名和对应的全限量名保存到对应的hashmap中
   public void registerAlias(String alias, Class<?> value) {
     if (alias == null) {
       throw new TypeException("The parameter alias cannot be null");

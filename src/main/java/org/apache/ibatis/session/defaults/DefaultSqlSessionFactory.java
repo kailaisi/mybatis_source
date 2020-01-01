@@ -22,6 +22,7 @@ import org.apache.ibatis.exceptions.ExceptionFactory;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -93,9 +94,11 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     Transaction tx = null;
     try {
       final Environment environment = configuration.getEnvironment();
-      //事务工厂
+      /** 事务工厂,在XMLConfigBuilder中，会根据环境，设置了对应的事务工厂以及source源码。
+       * {@link org.apache.ibatis.builder.xml.XMLConfigBuilder#environmentsElement(XNode)}
+       * {@link org.apache.ibatis.builder.xml.XMLConfigBuilder#dataSourceElement(XNode)}*/
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-      //生成一个事务
+      //根据对应的事务隔离级别，是否开启自动提交，生成一个事务对象
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       //生成一个执行器(事务包含在执行器里)
       final Executor executor = configuration.newExecutor(tx, execType);
