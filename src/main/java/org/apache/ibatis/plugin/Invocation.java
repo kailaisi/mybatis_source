@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * 将目标函数和方法进行封装，在通过代理+责任链模式中，可以直接通过proceed()调用被代理对象的方法
  * @author Clinton Begin
  */
 public class Invocation {

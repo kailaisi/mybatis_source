@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
+ * 代理方法，所有拦截器，通过层层的代理，最终会调用这个方法
  * @author Clinton Begin
  */
 public class Plugin implements InvocationHandler {
@@ -39,12 +40,14 @@ public class Plugin implements InvocationHandler {
     this.interceptor = interceptor;
     this.signatureMap = signatureMap;
   }
-
+  //静态方法，所有的拦截器中可以通过这个方法来进行对上一个拦截器返回的代理的包装
   public static Object wrap(Object target, Interceptor interceptor) {
+    //从拦截器的注解中获取拦截的类名和方法信息
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
+      //通过代理动态代理生成对应的代理类
       return Proxy.newProxyInstance(
           type.getClassLoader(),
           interfaces,
@@ -72,9 +75,11 @@ public class Plugin implements InvocationHandler {
     if (interceptsAnnotation == null) {
       throw new PluginException("No @Intercepts annotation was found in interceptor " + interceptor.getClass().getName());      
     }
+    //获取注解里面的Signature信息
     Signature[] sigs = interceptsAnnotation.value();
     Map<Class<?>, Set<Method>> signatureMap = new HashMap<Class<?>, Set<Method>>();
     for (Signature sig : sigs) {
+      //获取要拦截的方法
       Set<Method> methods = signatureMap.get(sig.type());
       if (methods == null) {
         methods = new HashSet<Method>();

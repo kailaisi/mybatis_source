@@ -122,9 +122,11 @@ public class XMLConfigBuilder extends BaseBuilder {
             loadCustomVfs(settings);
             //2.类型别名
             typeAliasesElement(root.evalNode("typeAliases"));
-            //3.插件
+            //3.插件，其实是拦截器
+            // 利用JDK动态代理和责任链设计模式的综合运用。采用责任链模式，通过动态代理组织多个拦截器，
+            // 通过这些拦截器你可以做一些你想做的事。例如：对所有的接口方法做一个日志记录和接口耗时记录。
             pluginElement(root.evalNode("plugins"));
-            //4.对象工厂
+            //4.对象工厂，用于返回的数据创建对象
             objectFactoryElement(root.evalNode("objectFactory"));
             //5.对象包装工厂
             objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
@@ -207,8 +209,12 @@ public class XMLConfigBuilder extends BaseBuilder {
             }
         }
     }
-
+    /*<plugins>
+        <plugin interceptor="com.kailaisi.mybatis.interceptor.ExamplePlugin"></plugin>
+      </plugins>
+    */
     private void pluginElement(XNode parent) throws Exception {
+        //解析Plugins标签，将所有的拦截器生成对应的实例，然后放到Configuration对象中
         if (parent != null) {
             for (XNode child : parent.getChildren()) {
                 String interceptor = child.getStringAttribute("interceptor");

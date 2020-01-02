@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 责任链模式，将所有的拦截器通过plugin方式一层层的形成责任链的调用
  * @author Clinton Begin
  */
 public class InterceptorChain {

@@ -8,6 +8,13 @@
         INSERT INTO person (name, age, phone, email, address)
         VALUES(#{name},#{age},#{phone},#{email},#{address})
     </insert>
-
+    <insert id="update" parameterType="Person" keyProperty="id" useGeneratedKeys="true">
+        update person
+        <set>
+        <if test="age!=null">age =#{age},</if>
+        <if test="phone!=null">phone=#{phone}</if>
+        </set>
+        where name=#{name}
+    </insert>
 </mapper>
 

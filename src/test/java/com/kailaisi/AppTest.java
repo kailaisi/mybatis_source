@@ -37,7 +37,10 @@ public class AppTest
         PersonDao personDao =  sqlSession.getMapper(PersonDao.class);
         personDao=sqlSession.getMapper(PersonDao.class);
         Person p = new Person();
-        personDao.insert(p);
+        p.setName("chen");
+        p.setAge(10);
+        p.setPhone("15122112764");
+        personDao.update(p);
         sqlSession.commit();
         sqlSession.close();
     }
