@@ -68,18 +68,20 @@ public class Plugin implements InvocationHandler {
       throw ExceptionUtil.unwrapThrowable(e);
     }
   }
-
+  //取得签名Map,就是获取Interceptor实现类上面的注解，要拦截的是那个类（Executor，ParameterHandler，   ResultSetHandler，StatementHandler）的那个方法
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
+    /** 获取类上的Intercepts注解。可以参考{@link com.kailaisi.mybatis.interceptor.ExamplePlugin}的注解 */
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
     if (interceptsAnnotation == null) {
+      //如果拦截器上没有注解，则直接报错
       throw new PluginException("No @Intercepts annotation was found in interceptor " + interceptor.getClass().getName());      
     }
-    //获取注解里面的Signature信息
+    //获取注解里面的Signature信息，返回的是数组
     Signature[] sigs = interceptsAnnotation.value();
+    //因为要拦截的那个类（Executor，ParameterHandler，   ResultSetHandler，StatementHandler）里面可能需要拦截多个方法(method)，因此通过set来进行存储
     Map<Class<?>, Set<Method>> signatureMap = new HashMap<Class<?>, Set<Method>>();
     for (Signature sig : sigs) {
-      //获取要拦截的方法
       Set<Method> methods = signatureMap.get(sig.type());
       if (methods == null) {
         methods = new HashSet<Method>();
@@ -95,6 +97,7 @@ public class Plugin implements InvocationHandler {
     return signatureMap;
   }
 
+  //获取接口信息
   private static Class<?>[] getAllInterfaces(Class<?> type, Map<Class<?>, Set<Method>> signatureMap) {
     Set<Class<?>> interfaces = new HashSet<Class<?>>();
     while (type != null) {
