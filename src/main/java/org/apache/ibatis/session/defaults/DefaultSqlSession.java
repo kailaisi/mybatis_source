@@ -144,7 +144,9 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
+      //先获取MappedStatement（每个命名空间的每个方法，都有一个对应的MappedStatement）
       MappedStatement ms = configuration.getMappedStatement(statement);
+      //最终由executor来执行语句
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
@@ -190,11 +192,14 @@ public class DefaultSqlSession implements SqlSession {
     return update(statement, null);
   }
 
+  //update 核心代码
   @Override
   public int update(String statement, Object parameter) {
     try {
+      //每次要更新之前，dirty标志设为true
       dirty = true;
       MappedStatement ms = configuration.getMappedStatement(statement);
+      //最终由executor来执行语句
       return executor.update(ms, wrapCollection(parameter));
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error updating database.  Cause: " + e, e);

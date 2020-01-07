@@ -45,8 +45,12 @@ public class SimpleExecutor extends BaseExecutor {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
+      //新建一个StatementHandler
+      //这里看到ResultHandler传入的是null
       StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
+      //生成一个Statement
       stmt = prepareStatement(handler, ms.getStatementLog());
+      //由StatementHandler来执行stmt语句
       return handler.update(stmt);
     } finally {
       closeStatement(stmt);
@@ -81,6 +85,7 @@ public class SimpleExecutor extends BaseExecutor {
 
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
+    //获取一个connect连接
     Connection connection = getConnection(statementLog);
     stmt = handler.prepare(connection, transaction.getTimeout());
     handler.parameterize(stmt);

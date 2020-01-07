@@ -34,21 +34,26 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ * 基类，通过建造者模式，将一些基本的处理在此处处理，具体的实现交给子类来处理
+ * BaseStatementHandler有三个子类，分别为：
+ * SimpleStatememtHandler:最简单的StatementHandler，处理不带参数运行的SQL
+ * PreparedStatementHandler:预处理Statement的handler，处理带参数允许的SQL
+ * CallableStatementHandler：存储过程的Statement的handler，处理存储过程SQL
  * @author Clinton Begin
  */
 public abstract class BaseStatementHandler implements StatementHandler {
 
   protected final Configuration configuration;
-  protected final ObjectFactory objectFactory;
+  protected final ObjectFactory objectFactory;//对象工厂
   protected final TypeHandlerRegistry typeHandlerRegistry;
-  protected final ResultSetHandler resultSetHandler;
-  protected final ParameterHandler parameterHandler;
+  protected final ResultSetHandler resultSetHandler;//结果处理集
+  protected final ParameterHandler parameterHandler;//参数处理集
 
-  protected final Executor executor;
-  protected final MappedStatement mappedStatement;
+  protected final Executor executor;//执行器
+  protected final MappedStatement mappedStatement;//mapper的SQL对象
   protected final RowBounds rowBounds;
 
-  protected BoundSql boundSql;
+  protected BoundSql boundSql;//sql封装对象
 
   protected BaseStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     this.configuration = mappedStatement.getConfiguration();
@@ -80,6 +85,8 @@ public abstract class BaseStatementHandler implements StatementHandler {
     return parameterHandler;
   }
 
+
+  //预编译sql语句
   @Override
   public Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException {
     ErrorContext.instance().sql(boundSql.getSql());
@@ -134,7 +141,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
       //ignore
     }
   }
-
+  //根据参数对象生成key
   protected void generateKeys(Object parameter) {
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
     ErrorContext.instance().store();
