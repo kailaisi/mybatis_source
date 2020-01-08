@@ -31,6 +31,9 @@ public final class LogFactory {
   private static Constructor<? extends Log> logConstructor;
 
   static {
+    //maven里面写的是<optional>true</optional>
+    //线程同时启动，尝试通过反射实例化各个Log的实现类，在实际项目中，会看具体的引用工程是否使用了对应的log模块
+    //如果引入了，那么这里就可以将对应的log实现类初始化成功。
     tryImplementation(new Runnable() {
       @Override
       public void run() {
@@ -129,7 +132,9 @@ public final class LogFactory {
 
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
+      //返回具体实现类的构造方法
       Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
+      //实现构造方法
       Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {
         log.debug("Logging initialized using '" + implClass + "' adapter.");

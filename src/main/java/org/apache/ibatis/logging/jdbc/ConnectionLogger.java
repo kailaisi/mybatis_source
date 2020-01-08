@@ -26,6 +26,7 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
+ * 动态代理connection，当进行connection的增删改查时，能够进行相关代码的打印
  * Connection proxy to add logging
  * 
  * @author Clinton Begin
@@ -53,6 +54,8 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
           debug(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);
         }        
         PreparedStatement stmt = (PreparedStatement) method.invoke(connection, params);
+        //如果调用的是prepareStatement方法，需要返回PreparedStatement类，
+        // 这里我们将返回的类进行动态代理，那么执行prepareStatement的相关方法的时候，就可以进行prepareStatement的日志打印了
         stmt = PreparedStatementLogger.newInstance(stmt, statementLog, queryStack);
         return stmt;
       } else if ("prepareCall".equals(method.getName())) {
@@ -75,6 +78,7 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
   }
 
   /*
+   * 代理生成方法写在类里面，符合？？原则
    * Creates a logging version of a connection
    *
    * @param conn - the original connection

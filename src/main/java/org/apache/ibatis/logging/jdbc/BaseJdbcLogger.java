@@ -30,6 +30,7 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.reflection.ArrayUtil;
 
 /**
+ * JDBC的数据打印
  * Base class for proxies to do logging
  * 
  * @author Clinton Begin
